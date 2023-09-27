@@ -1,5 +1,6 @@
 ﻿using ApiLenxy.Application.DTOs.Address;
 using ApiLenxy.Application.DTOs.Phone;
+using ApiLenxy.Domain.ValueObjects;
 
 namespace ApiLenxy.Application.DTOs.Customer;
 
@@ -33,21 +34,23 @@ public class CustomerDTO
         };
     }
 
-    //public static Customer ToCutomer(CustomerDTO customerDTO)
-    //{
-    //    var name = new Name(customerDTO.FirstName, customerDTO.LastName);
-    //    var document = new Document(customerDTO.DocumentNumber, Api_Lenxy.Domain.Enums.EDocumentType.CPF);
-    //    var email = new Email(customerDTO.Email);
-    //    var birthDay = new BirthDay(customerDTO.BirthDay);
+    public static Domain.Entites.Customer ToCustomer(CustomerDTO customerDTO)
+    {
+        var name = new Name(customerDTO.FirstName, customerDTO.LastName);
+        var document = new Document(customerDTO.DocumentNumber, customerDTO.DocumentType);
+        var email = new Email(customerDTO.Email);
+        var birthDay = new BirthDay(customerDTO.BirthDay);
 
-    //    var phone = new List<Phone>
-    //    {
-    //        new Phone(customerDTO.Phone.ToString()),
-    //    };
+        var phone = new List<Domain.Entites.Phone>();
+        foreach (var item in customerDTO.Phone)
+        {
+            var phoneDTO = new Domain.Entites.Phone() { PhoneNumber = item.PhoneNumber };
+            phone.Add(phoneDTO);
+        }
 
-    //    var address = new Address(customerDTO.Address.ZipCode, customerDTO.Address.State,
-    //        customerDTO.Address.City, customerDTO.Address.Street, customerDTO.Address.Number);
+        var address = new Domain.Entites.Address(customerDTO.Address.ZipCode, customerDTO.Address.State,
+            customerDTO.Address.City, customerDTO.Address.Street, customerDTO.Address.Number);
 
-    //    return new Customer(name, document, email, phone, birthDay, address);
-    //}
+        return new Domain.Entites.Customer(name, document, email, phone, birthDay, address);
+    }
 }

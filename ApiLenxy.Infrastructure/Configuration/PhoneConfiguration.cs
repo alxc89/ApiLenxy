@@ -10,5 +10,10 @@ public class PhoneConfiguration : IEntityTypeConfiguration<Phone>
     {
         builder.ToTable(nameof(Phone));
         builder.HasKey(x => x.Id);
+        builder.Property(p => p.PhoneNumber).HasColumnType("varchar").HasMaxLength(20);
+
+        builder.HasOne(x => x.Customer)
+            .WithMany(x => x.Phones)
+            .HasForeignKey(x => x.CustomerId);
     }
 }

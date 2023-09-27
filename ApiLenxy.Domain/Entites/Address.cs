@@ -19,4 +19,5 @@ public class Address : Entity
     public string City { get; private set; }
     public string Street { get; private set; }
     public string Number { get; private set; }
+    public Customer Customer { get; private set; }
 }

@@ -10,5 +10,5 @@ public class AddressDTO
     public string Number { get; set; }
 
     public static AddressDTO ToAddressDTO(Domain.Entites.Address address)
-     => new() { ZipCode = address.ZipCode, State = address.State, City = address.City, Street = address.Street };
+     => new() {Id = address.Id, ZipCode = address.ZipCode, State = address.State, City = address.City, Street = address.Street, Number = address.Number };
 }

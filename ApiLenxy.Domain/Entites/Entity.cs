@@ -9,5 +9,10 @@ namespace ApiLenxy.Domain.Entites
             Id = Guid.NewGuid();
         }
         public Guid Id { get; private set; }
+    
+        protected void SetId(Guid id) 
+        {
+            Id = id;
+        }
     }
 }

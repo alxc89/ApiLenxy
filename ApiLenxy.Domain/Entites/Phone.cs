@@ -11,4 +11,5 @@ public class Phone : Entity
 
     public Guid CustomerId { get; set; }
     public string PhoneNumber { get; set; }
+    public Customer Customer { get; set; }
 }

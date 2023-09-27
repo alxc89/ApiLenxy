@@ -6,50 +6,50 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiLenxy.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DvInitial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
                     Document = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
                     Type = table.Column<string>(type: "VARCHAR(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "VARCHAR(100)", maxLength: 100, nullable: true),
-                    BirthDay_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Updated_At = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Customer", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Addresses",
+                name: "Address",
                 columns: table => new
                 {
-                    City = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Number = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    State = table.Column<string>(type: "char(2)", maxLength: 2, nullable: true),
+                    City = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
+                    Street = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: true),
+                    Number = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.City);
+                    table.PrimaryKey("PK_Address", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_Customers_CustomerId",
+                        name: "FK_Address_Customer_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -59,29 +59,29 @@ namespace ApiLenxy.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Phone", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Phone_Customers_CustomerId",
+                        name: "FK_Phone_Customer_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_CustomerId",
-                table: "Addresses",
+                name: "IX_Address_CustomerId",
+                table: "Address",
                 column: "CustomerId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_Id",
-                table: "Customers",
+                name: "IX_Customer_Id",
+                table: "Customer",
                 column: "Id");
 
             migrationBuilder.CreateIndex(
@@ -94,13 +94,13 @@ namespace ApiLenxy.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "Phone");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Customer");
         }
     }
 }

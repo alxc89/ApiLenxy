@@ -9,7 +9,6 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.ToTable(nameof(Customer));
-        builder.HasIndex(x => x.Id);
         #region ValueObjcet
         builder.OwnsOne(x => x.Name, name =>
         {
@@ -35,7 +34,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 .HasMaxLength(50)
                 .HasColumnType("VARCHAR")
                 .IsRequired();
-});
+        });
         builder.OwnsOne(x => x.Email, email =>
         {
             email.Property(e => e.Address)
@@ -43,6 +42,23 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 .HasMaxLength(100)
                 .HasColumnType("VARCHAR");
         });
+        builder.OwnsOne(x => x.BirthDay, birthDay =>
+        {
+            birthDay.Property(b => b.Date)
+                .HasColumnName("BirthDay")
+                .HasColumnType("datetime2");
+        });
         #endregion
+
+        builder.HasOne(a => a.Address)
+           .WithOne(a => a.Customer)
+           .HasForeignKey<Address>(a => a.CustomerId)
+           .IsRequired();
+
+        builder.HasMany(p => p.Phones)
+            .WithOne(p => p.Customer)
+            .HasForeignKey(p => p.CustomerId)
+            .IsRequired();
+        builder.HasIndex(c => c.Id);
     }
 }

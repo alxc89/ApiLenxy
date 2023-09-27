@@ -60,7 +60,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
         try
         {
             await _customerRepository.DeleteAsync(id);
-            return ServiceResponseHelper.Error<CustomerDTO>(200, "Cliente Deletado com sucesso!");
+            return ServiceResponseHelper.Success<CustomerDTO>(200, "Cliente Deletado com sucesso!");
         }
         catch
         {
@@ -74,9 +74,9 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
         CustomerDTO customerDTO = customer;
 
         if (customerDTO == null)
-            return ServiceResponseHelper.Error<CustomerDTO>(401, "Dados encontrados com sucesso!");
+            return ServiceResponseHelper.Error<CustomerDTO>(401, "Cliente não existe!");
 
-        return ServiceResponseHelper.Error<CustomerDTO>(200, "Dados encontrados com sucesso!");
+        return ServiceResponseHelper.Success(200, "Dados encontrados com sucesso!", customerDTO);
     }
 
     public async Task<ServiceResponse<CustomerDTO>> GetCustomersAsync()
@@ -87,7 +87,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
             customerDTO.Add(customer);
 
         if (customerDTO.Count == 0)
-            return ServiceResponseHelper.Error<CustomerDTO>(401, "Dados encontrados com sucesso!");
+            return ServiceResponseHelper.Error<CustomerDTO>(401, "Cliente não existe!");
 
         return ServiceResponseHelper.Success(200, "Dados encontrados com sucesso!", customerDTO);
 
@@ -95,12 +95,26 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
     public async Task<ServiceResponse<CustomerDTO>> UpdateCustomerAsync(UpdateCustomerDTO updateCustomerDTO)
     {
-        var customerMapDTO = _mapper.Map<Domain.Entites.Customer>(updateCustomerDTO);
-        var customerUpdate = await _customerRepository.UpdateCustomer(updateCustomerDTO.Id, customerMapDTO);
-        CustomerDTO customer = customerUpdate;
+        Name name = new(updateCustomerDTO.FirstName, updateCustomerDTO.LastName);
+        Document document = new(updateCustomerDTO.DocumentNumber, updateCustomerDTO.DocumentType);
+        Email email = new(updateCustomerDTO.Email);
+        BirthDay birth = new(updateCustomerDTO.BirthDay);
+
+        List<Phone> phone = new();
+        foreach (var item in updateCustomerDTO.Phone)
+        {
+            var phoneDTO = new Phone() { PhoneNumber = item.PhoneNumber };
+            phone.Add(phoneDTO);
+        }
+        Address address = new(updateCustomerDTO.Address.ZipCode, updateCustomerDTO.Address.State,
+            updateCustomerDTO.Address.City, updateCustomerDTO.Address.Street, updateCustomerDTO.Address.Number);
+
+        Domain.Entites.Customer customer = Domain.Entites.Customer.Update(updateCustomerDTO.Id, name, document, email, phone, birth, updateCustomerDTO.Status, address);
+        var customerUpdate = await _customerRepository.UpdateCustomer(updateCustomerDTO.Id, customer);
+        CustomerDTO customerDTO = customerUpdate;
 
         if (customerUpdate == null)
             return ServiceResponseHelper.Error<CustomerDTO>(404, "Dados não foram Atualizados!");
-        return ServiceResponseHelper.Success(200, "Dados atualizados com sucesso!", customer);
+        return ServiceResponseHelper.Success(200, "Dados atualizados com sucesso!", customerDTO);
     }
 }

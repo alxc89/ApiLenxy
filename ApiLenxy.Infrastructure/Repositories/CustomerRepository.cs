@@ -25,6 +25,6 @@ public class CustomerRepository : RepositoryBase<Customer>, ICustomerRepository
         _context.Customers.Entry(customerLoadFromDataBase).CurrentValues.SetValues(customer);
         await _context.SaveChangesAsync();
 
-        return customer;
+        return customerLoadFromDataBase;
     }
 }

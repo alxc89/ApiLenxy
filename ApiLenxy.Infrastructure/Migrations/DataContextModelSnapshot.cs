@@ -24,28 +24,33 @@ namespace ApiLenxy.Infrastructure.Migrations
 
             modelBuilder.Entity("ApiLenxy.Domain.Entites.Address", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Number")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar");
 
                     b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2)
+                        .HasColumnType("char");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar");
 
                     b.Property<string>("ZipCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("City");
+                    b.HasKey("Id");
 
                     b.HasIndex("CustomerId")
                         .IsUnique();
@@ -113,7 +118,8 @@ namespace ApiLenxy.Infrastructure.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<DateTime>("Date")
-                                .HasColumnType("datetime2");
+                                .HasColumnType("datetime2")
+                                .HasColumnName("BirthDay");
 
                             b1.HasKey("CustomerId");
 
@@ -172,7 +178,6 @@ namespace ApiLenxy.Infrastructure.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("FirstName")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("VARCHAR")
                                 .HasColumnName("FirstName");

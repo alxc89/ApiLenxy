@@ -20,6 +20,16 @@ public class Customer : Entity
     }
     private Customer() { }
 
+    public static Customer Update(Guid id, Name name, Document document, Email email, ICollection<Phone> phones,
+        BirthDay birthDay, bool status, Address address)
+    {
+        var customer = new Customer(name, document, email, phones, birthDay, address);
+        customer.SetId(id);
+        customer.SetStatus(status);
+        customer.Updated_At = DateTime.Now;
+        return customer;
+    }
+
     public Name Name { get; private set; }
     public Document Document { get; private set; }
     public Email Email { get; private set; }
