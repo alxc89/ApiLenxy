@@ -13,11 +13,9 @@ namespace ApiLenxy.Application.Services.Customer;
 public class CustomerService : Notification<EntityNotification>, ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
-    private readonly IMapper _mapper;
     public CustomerService(ICustomerRepository customerRepository, IMapper mapper)
     {
         _customerRepository = customerRepository;
-        _mapper = mapper;
     }
     public async Task<ServiceResponse<CustomerDTO>> CreateCustomerAsync(CreateCustomerDTO createCustomerDTO)
     {
@@ -30,11 +28,12 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
         #region preenchendo as entidades
         var phone = new List<Phone>();
-        foreach (var item in createCustomerDTO.Phone)
-        {
-            var phoneDTO = new Phone() { PhoneNumber = item.PhoneNumber };
-            phone.Add(phoneDTO);
-        }
+        if (createCustomerDTO.Phone is not null)
+            foreach (var item in createCustomerDTO.Phone)
+            {
+                var phoneDTO = new Phone() { PhoneNumber = item.PhoneNumber };
+                phone.Add(phoneDTO);
+            }
         var address = new Address(createCustomerDTO.Address.ZipCode, createCustomerDTO.Address.State,
             createCustomerDTO.Address.City, createCustomerDTO.Address.Street, createCustomerDTO.Address.Number);
 
@@ -43,7 +42,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
         try
         {
-            CustomerDTO newCustomer = await _customerRepository.CreateAsync(customer);
+            CustomerDTO newCustomer = await _customerRepository.InsertCustomerAsync(customer);
             return ServiceResponseHelper.Success(200, "Cliente salvo com sucesso!", newCustomer);
         }
         catch
@@ -54,12 +53,12 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
     public async Task<ServiceResponse<CustomerDTO>> DeleteAsync(Guid id)
     {
-        var customer = await _customerRepository.GetById(id);
+        var customer = await _customerRepository.GetCustomerById(id);
         if (customer == null)
             return ServiceResponseHelper.Error<CustomerDTO>(404, "Cliente não existe!");
         try
         {
-            await _customerRepository.DeleteAsync(id);
+            await _customerRepository.DeleteCustomerAsync(id);
             return ServiceResponseHelper.Success<CustomerDTO>(200, "Cliente Deletado com sucesso!");
         }
         catch
@@ -70,7 +69,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
     public async Task<ServiceResponse<CustomerDTO>> GetCustomerByIdAsync(Guid idCustomer)
     {
-        var customer = await _customerRepository.GetById(idCustomer, p => p.Phones, a => a.Address);
+        var customer = await _customerRepository.GetCustomerById(idCustomer);
         CustomerDTO customerDTO = customer;
 
         if (customerDTO == null)
@@ -81,7 +80,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
     public async Task<ServiceResponse<CustomerDTO>> GetCustomersAsync()
     {
-        var customers = await _customerRepository.GetAsync(p => p.Phones, a => a.Address);
+        var customers = await _customerRepository.GetCustomerAsync();
         List<CustomerDTO> customerDTO = new();
         foreach (var customer in customers)
             customerDTO.Add(customer);
@@ -101,16 +100,17 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
         BirthDay birth = new(updateCustomerDTO.BirthDay);
 
         List<Phone> phone = new();
-        foreach (var item in updateCustomerDTO.Phone)
-        {
-            var phoneDTO = new Phone() { PhoneNumber = item.PhoneNumber };
-            phone.Add(phoneDTO);
-        }
-        Address address = new(updateCustomerDTO.Address.ZipCode, updateCustomerDTO.Address.State,
-            updateCustomerDTO.Address.City, updateCustomerDTO.Address.Street, updateCustomerDTO.Address.Number);
+        if (updateCustomerDTO.Phone is not null)
+            foreach (var item in updateCustomerDTO.Phone)
+            {
+                Phone phoneUpdated = Phone.Update(item.Id, item.PhoneNumber, updateCustomerDTO.Id);
+                phone.Add(phoneUpdated);
+            }
+        Address address = Address.Update(updateCustomerDTO.Address.Id, updateCustomerDTO.Address.ZipCode, updateCustomerDTO.Address.State,
+            updateCustomerDTO.Address.City, updateCustomerDTO.Address.Street, updateCustomerDTO.Address.Number, updateCustomerDTO.Id);
 
         Domain.Entites.Customer customer = Domain.Entites.Customer.Update(updateCustomerDTO.Id, name, document, email, phone, birth, updateCustomerDTO.Status, address);
-        var customerUpdate = await _customerRepository.UpdateCustomer(updateCustomerDTO.Id, customer);
+        var customerUpdate = await _customerRepository.UpdateCustomerAsync(customer);
         CustomerDTO customerDTO = customerUpdate;
 
         if (customerUpdate == null)
