@@ -5,10 +5,10 @@ namespace ApiLenxy.Domain.Interfaces;
 
 public interface ICustomerRepository
 {
-    Task<Customer> GetById(Guid id);
-    Task<Customer> CreateAsync(Customer customer);
-    Task<Customer> UpdateAsync(Customer customer);
-    Task DeleteAsync(Guid id);
-    Task<IEnumerable<Customer>> GetAsync();
+    Task<IEnumerable<Customer>> GetCustomerAsync();
+    Task<Customer> GetCustomerById(Guid id);
+    Task<Customer> InsertCustomerAsync(Customer customer);
+    Task<Customer> UpdateCustomerAsync(Customer customer);
+    Task DeleteCustomerAsync(Guid id);
     Task<bool> VerifyExistsByDocumentAsync(string document);
 }
