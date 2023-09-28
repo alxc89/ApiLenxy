@@ -23,7 +23,15 @@ public class Customer : Entity
     public static Customer Update(Guid id, Name name, Document document, Email email, ICollection<Phone> phones,
         BirthDay birthDay, bool status, Address address)
     {
-        var customer = new Customer(name, document, email, phones, birthDay, address);
+        var customer = new Customer
+        {
+            Name = name,
+            Document = document,
+            Email = email,
+            Phones = phones,
+            BirthDay = birthDay,
+            Address = address
+        };
         customer.SetId(id);
         customer.SetStatus(status);
         customer.Updated_At = DateTime.Now;
@@ -33,12 +41,12 @@ public class Customer : Entity
     public Name Name { get; private set; }
     public Document Document { get; private set; }
     public Email Email { get; private set; }
-    public ICollection<Phone> Phones { get; private set; }
+    public ICollection<Phone> Phones { get; set; }
     public BirthDay BirthDay { get; private set; }
     public bool Status { get; private set; }
     public DateTime Created_At { get; private set; }
     public DateTime Updated_At { get; private set; }
-    public Address Address { get; private set; }
+    public Address Address { get; set; }
 
     private void SetStatus(bool active)
     {

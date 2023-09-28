@@ -10,7 +10,7 @@ public class Address : Entity
         Street = street;
         Number = number;
     }
-    
+
     private Address() { }
 
     public Guid CustomerId { get; private set; }
@@ -20,4 +20,19 @@ public class Address : Entity
     public string Street { get; private set; }
     public string Number { get; private set; }
     public Customer Customer { get; private set; }
+
+    public static Address Update(Guid id, string zipCode, string state, string city, string street, string number, Guid customerId)
+    {
+        Address address = new()
+        {
+            ZipCode = zipCode,
+            State = state,
+            City = city,
+            Street = street,
+            Number = number, 
+            CustomerId = customerId
+        };
+        address.SetId(id);
+        return address;
+    }
 }
