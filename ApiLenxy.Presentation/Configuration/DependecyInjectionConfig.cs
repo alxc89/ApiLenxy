@@ -9,7 +9,6 @@ public static class DependecyInjectionConfig
     public static void AddDependecyInjectionConfiguration(this IServiceCollection services)
     {
         services.AddScoped<ICustomerRepository, CustomerRepository>();
-        services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
         services.AddScoped<ICustomerService, CustomerService>();
     }
 }
