@@ -18,7 +18,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
         {
             var newCustomer = await _customerService.CreateCustomerAsync(customer);
             if (newCustomer.IsSuccess)
-                return CreatedAtAction(nameof(GetByIdAsync), new { idCustomer = newCustomer.Data.Id }, newCustomer);
+                return CreatedAtAction(nameof(GetByIdAsync), new { id = newCustomer.Data.Id }, newCustomer);
             return BadRequest(newCustomer.Message);
         }
 
