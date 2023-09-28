@@ -27,13 +27,11 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             document.Property(d => d.Number)
                 .HasColumnName("Document")
                 .HasMaxLength(50)
-                .HasColumnType("VARCHAR")
-                .IsRequired();
+                .HasColumnType("VARCHAR");
             document.Property(d => d.Type)
                 .HasColumnName("Type")
                 .HasMaxLength(50)
-                .HasColumnType("VARCHAR")
-                .IsRequired();
+                .HasColumnType("VARCHAR");
         });
         builder.OwnsOne(x => x.Email, email =>
         {
