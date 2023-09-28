@@ -2,6 +2,7 @@
 
 public class PhoneDTO
 {
+    public Guid Id { get; set; }
     public string PhoneNumber { get; set; }
 
     public static List<PhoneDTO> ToPhoneDTO(IEnumerable<Domain.Entites.Phone> phones)
@@ -10,7 +11,7 @@ public class PhoneDTO
 
         foreach (var phone in phones)
         {
-            phoneDTOs.Add(new PhoneDTO { PhoneNumber = phone.PhoneNumber });
+            phoneDTOs.Add(new PhoneDTO { Id = phone.Id, PhoneNumber = phone.PhoneNumber });
         }
 
         return phoneDTOs;
