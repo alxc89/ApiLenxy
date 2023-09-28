@@ -14,6 +14,6 @@ public class PhoneConfiguration : IEntityTypeConfiguration<Phone>
 
         builder.HasOne(x => x.Customer)
             .WithMany(x => x.Phones)
-            .HasForeignKey(x => x.CustomerId);
+            .HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Cascade);
     }
 }
