@@ -102,17 +102,14 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
         BirthDay birth = new(updateCustomerDTO.BirthDay);
 
         if (updateCustomerDTO.Phone is not null)
+        {
+            customer.Phones.Clear();
             foreach (var item in updateCustomerDTO.Phone)
             {
-                Phone phoneExists = customer.Phones.Where(x => x.Id == item.Id).FirstOrDefault();
-                if (phoneExists != null)
-                    phoneExists.Update(item.PhoneNumber, updateCustomerDTO.Id);
-                else
-                {
-                    Phone newPhone = new(item.PhoneNumber);
-                    customer.Phones.Add(newPhone);
-                }
+                Phone newPhone = new(item.PhoneNumber);
+                customer.Phones.Add(newPhone);
             }
+        }
         else
             customer.Phones.Clear();
 

@@ -30,7 +30,7 @@ public class CustomerRepository : ICustomerRepository
             .Customers
             .Include(p => p.Phones)
             .Include(a => a.Address)
-            .AsQueryable();
+            .AsTracking();
 
         var result = await customer.SingleOrDefaultAsync(x => x.Id == id);
         return result;
@@ -55,13 +55,12 @@ public class CustomerRepository : ICustomerRepository
     {
         try
         {
-            var customerFromDataBase = await _context
-                .Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id.Equals(customer.Id));
-            if (customerFromDataBase == null)
-             throw new Exception("Não encontrado para atualização!");
-                await _context.SaveChangesAsync();
+            foreach (var item in customer.Phones)
+            {
+                var phone = UpdateCustomerPhone(item);
+                item.CustomerId = customer.Id;
+            }
+            await _context.SaveChangesAsync();
 
             return customer;
         }
@@ -81,11 +80,11 @@ public class CustomerRepository : ICustomerRepository
         await _context.SaveChangesAsync();
     }
 
-    public static void UpdateCustomerPhone(Customer customer, Customer customerFromDataBase)
+    public async Task<Phone> UpdateCustomerPhone(Phone phone)
     {
-        customerFromDataBase.Phones.Clear();
-        foreach (var phone in customer.Phones)
-            customerFromDataBase.Phones.Add(phone);
+        await _context.Phones.AddAsync(phone);
+        await _context.SaveChangesAsync();
+        return phone;
     }
 
     public Task<bool> VerifyExistsByDocumentAsync(string document)
