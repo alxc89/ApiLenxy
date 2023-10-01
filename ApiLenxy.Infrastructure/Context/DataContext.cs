@@ -9,6 +9,7 @@ public class DataContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Phone> Phones { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
@@ -17,6 +18,7 @@ public class DataContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
         modelBuilder.ApplyConfiguration(new AddressConfiguration());
+        modelBuilder.ApplyConfiguration(new PhoneConfiguration());
         modelBuilder.ConfigureOwnedTypeNavigationsAsRequired();
     }
 }

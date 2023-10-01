@@ -29,10 +29,20 @@ public class Address : Entity
             State = state,
             City = city,
             Street = street,
-            Number = number, 
+            Number = number,
             CustomerId = customerId
         };
         address.SetId(id);
         return address;
+    }
+
+    public void Update(string zipCode, string state, string city, string street, string number, Guid customerId)
+    {
+        ZipCode = zipCode;
+        State = state;
+        City = city;
+        Street = street;
+        Number = number;
+        CustomerId = customerId;
     }
 }

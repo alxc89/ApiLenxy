@@ -94,22 +94,33 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
 
     public async Task<ServiceResponse<CustomerDTO>> UpdateCustomerAsync(UpdateCustomerDTO updateCustomerDTO)
     {
+        Domain.Entites.Customer customer = await _customerRepository.GetCustomerById(updateCustomerDTO.Id);
+
         Name name = new(updateCustomerDTO.FirstName, updateCustomerDTO.LastName);
         Document document = new(updateCustomerDTO.DocumentNumber, updateCustomerDTO.DocumentType);
         Email email = new(updateCustomerDTO.Email);
         BirthDay birth = new(updateCustomerDTO.BirthDay);
 
-        List<Phone> phone = new();
         if (updateCustomerDTO.Phone is not null)
             foreach (var item in updateCustomerDTO.Phone)
             {
-                Phone phoneUpdated = Phone.Update(item.Id, item.PhoneNumber, updateCustomerDTO.Id);
-                phone.Add(phoneUpdated);
+                Phone phoneExists = customer.Phones.Where(x => x.Id == item.Id).FirstOrDefault();
+                if (phoneExists != null)
+                    phoneExists.Update(item.PhoneNumber, updateCustomerDTO.Id);
+                else
+                {
+                    Phone newPhone = new(item.PhoneNumber);
+                    customer.Phones.Add(newPhone);
+                }
             }
-        Address address = Address.Update(updateCustomerDTO.Address.Id, updateCustomerDTO.Address.ZipCode, updateCustomerDTO.Address.State,
-            updateCustomerDTO.Address.City, updateCustomerDTO.Address.Street, updateCustomerDTO.Address.Number, updateCustomerDTO.Id);
+        else
+            customer.Phones.Clear();
 
-        Domain.Entites.Customer customer = Domain.Entites.Customer.Update(updateCustomerDTO.Id, name, document, email, phone, birth, updateCustomerDTO.Status, address);
+        customer.Address.Update(updateCustomerDTO.Address.ZipCode, updateCustomerDTO.Address.State, updateCustomerDTO.Address.City,
+            updateCustomerDTO.Address.Street, updateCustomerDTO.Address.Number, updateCustomerDTO.Id);
+
+        customer.Update(name, document, email, birth, updateCustomerDTO.Status);
+
         var customerUpdate = await _customerRepository.UpdateCustomerAsync(customer);
         CustomerDTO customerDTO = customerUpdate;
 

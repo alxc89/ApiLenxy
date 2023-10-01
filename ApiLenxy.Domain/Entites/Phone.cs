@@ -24,4 +24,10 @@ public class Phone : Entity
 
         return phone;
     }
+
+    public void Update(string phoneNumber, Guid customerId)
+    {
+        PhoneNumber = phoneNumber;
+        CustomerId = customerId;
+    }
 }

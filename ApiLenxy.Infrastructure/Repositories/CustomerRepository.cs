@@ -57,18 +57,11 @@ public class CustomerRepository : ICustomerRepository
         {
             var customerFromDataBase = await _context
                 .Customers
-                .Include(a => a.Address)
-                .Include(p => p.Phones)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id.Equals(customer.Id));
-            if (customer == null || customerFromDataBase == null)
-                throw new ArgumentNullException(nameof(customer));
-
-            customerFromDataBase = customer;
-            customerFromDataBase.Address = customer.Address;
-            customerFromDataBase.Phones = customer.Phones;
-            _context.Customers.Update(customerFromDataBase);
-            await _context.SaveChangesAsync();
+            if (customerFromDataBase == null)
+             throw new Exception("Não encontrado para atualização!");
+                await _context.SaveChangesAsync();
 
             return customer;
         }

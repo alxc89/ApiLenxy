@@ -34,8 +34,17 @@ public class Customer : Entity
         };
         customer.SetId(id);
         customer.SetStatus(status);
-        customer.Updated_At = DateTime.Now;
         return customer;
+    }
+
+    public void Update(Name name, Document document, Email email, BirthDay birth, bool status)
+    {
+        Name = name;
+        Document = document;
+        Email = email;
+        BirthDay = birth;
+        SetStatus(status);
+        Updated_At = DateTime.Now;
     }
 
     public Name Name { get; private set; }
