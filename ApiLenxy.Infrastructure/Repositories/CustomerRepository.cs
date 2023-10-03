@@ -58,7 +58,6 @@ public class CustomerRepository : ICustomerRepository
             foreach (var item in customer.Phones)
             {
                 var phone = UpdateCustomerPhone(item);
-                item.CustomerId = customer.Id;
             }
             await _context.SaveChangesAsync();
 
@@ -83,7 +82,7 @@ public class CustomerRepository : ICustomerRepository
     public async Task<Phone> UpdateCustomerPhone(Phone phone)
     {
         await _context.Phones.AddAsync(phone);
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
         return phone;
     }
 

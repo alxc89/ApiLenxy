@@ -107,6 +107,7 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
             foreach (var item in updateCustomerDTO.Phone)
             {
                 Phone newPhone = new(item.PhoneNumber);
+                newPhone.CustomerId = updateCustomerDTO.Id;
                 customer.Phones.Add(newPhone);
             }
         }

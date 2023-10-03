@@ -18,7 +18,7 @@ internal class Program
         builder.Services.AddAutoMapperConfiguration();
 
         var app = builder.Build();
-
+        builder.Services.AddCors();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
