@@ -14,16 +14,20 @@ namespace ApiLenxy.Presentation.Api.Controllers
             _customerService = customerService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateCustomerDTO customer)
+        public async Task<IActionResult> Post(CreateCustomerDTO customer)
         {
             var newCustomer = await _customerService.CreateCustomerAsync(customer);
             if (newCustomer.IsSuccess)
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = newCustomer.Data.Id }, newCustomer);
+            {
+                var actionName = nameof(Get);
+                var routeValues = new { idCustomer = newCustomer.Data.Id };
+                return CreatedAtAction(actionName, routeValues, newCustomer.Data);
+            }
             return BadRequest(newCustomer.Message);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateCustomerDTO customerDTO)
+        public async Task<IActionResult> Put(UpdateCustomerDTO customerDTO)
         {
             var customerUpdated = await _customerService.UpdateCustomerAsync(customerDTO);
             if (customerUpdated.IsSuccess)
@@ -33,7 +37,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
         }
 
         [HttpGet("{idCustomer}")]
-        public async Task<IActionResult> GetByIdAsync(Guid idCustomer)
+        public async Task<IActionResult> Get(Guid idCustomer)
         {
             var customer = await _customerService.GetCustomerByIdAsync(idCustomer);
             if (customer.IsSuccess)
@@ -41,7 +45,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
             return NotFound(customer.Message);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> Get()
         {
             var customer = await _customerService.GetCustomersAsync();
 
@@ -53,7 +57,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
         {
             var result = await _customerService.DeleteAsync(Id);
             if (result.IsSuccess)
-                return NotFound();
+                return NoContent();
             return BadRequest(result.Message);
         }
     }

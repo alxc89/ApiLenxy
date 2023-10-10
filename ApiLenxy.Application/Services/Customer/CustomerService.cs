@@ -70,11 +70,9 @@ public class CustomerService : Notification<EntityNotification>, ICustomerServic
     public async Task<ServiceResponse<CustomerDTO>> GetCustomerByIdAsync(Guid idCustomer)
     {
         var customer = await _customerRepository.GetCustomerById(idCustomer);
+        if (customer == null)
+            return ServiceResponseHelper.Error<CustomerDTO>(404, "Cliente não existe!");
         CustomerDTO customerDTO = customer;
-
-        if (customerDTO == null)
-            return ServiceResponseHelper.Error<CustomerDTO>(401, "Cliente não existe!");
-
         return ServiceResponseHelper.Success(200, "Dados encontrados com sucesso!", customerDTO);
     }
 
