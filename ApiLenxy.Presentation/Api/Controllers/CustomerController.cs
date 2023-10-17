@@ -44,6 +44,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
                 return Ok(customer);
             return NotFound(customer.Message);
         }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -52,7 +53,7 @@ namespace ApiLenxy.Presentation.Api.Controllers
             return Ok(customer);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid Id)
         {
             var result = await _customerService.DeleteAsync(Id);
